@@ -18,7 +18,6 @@ def crearUsuario():
     print(usuario)
 
     return jsonify({
-        "success": True,
         "message": "Usuario creado exitosamente",
         "usuario": usuario
     }), 200

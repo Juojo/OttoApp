@@ -27,7 +27,7 @@ const Signup = () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/crearUsuario`, formData);
 
-      if (response.data.success) {
+      if (response.status === 200) {
         alert('¡Cuenta creada exitosamente!');
         navigate('/login');
       } else {
