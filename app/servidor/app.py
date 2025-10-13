@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from dotenv import load_dotenv
+from flask import Flask, request, jsonify # type: ignore
+from flask_cors import CORS  # type: ignore
+from dotenv import load_dotenv # type: ignore
 import os
 
 import usuarios.register
