@@ -1,21 +1,8 @@
-# def ejecutarOpcionIniciarSesion(usuarios):
-#     # Se ingresa el usuario y la contrasena
-#     print()
-#     usuario_ingresado = input("Ingrese nombre de usuario: ")
-#     contrasena_ingresada = input("Ingrese su contraseña: ")
+from .datos import usuarios
+
+def validarLogin(usuario_ingresado, contrasena_ingresada):
+    for usuario_id, usuario_data in usuarios.items():
+        if usuario_data["nombre"] == usuario_ingresado and usuario_data["contrasena"] == contrasena_ingresada:
+            return 200, "El usuario ingresado es correcto."
     
-#     login_exitoso = validarLogin(usuario_ingresado, contrasena_ingresada, usuarios)
-
-#     if login_exitoso:
-#         print("¡Inicio de sesión exitoso!")
-#         print("Bienvenido,", usuario_ingresado)
-#     else:
-#         print("El usuario no existe o su contrasena es incorrecta.")
-        
-#     return login_exitoso
-
-# def validarLogin(usuario_ingresado, contrasena_ingresada, usuarios):
-#     for nombre, contrasena, mail in usuarios:
-#         if nombre == usuario_ingresado and contrasena == contrasena_ingresada:
-#             return True  # Login exitoso
-#     return False  # No se encontró o contraseña incorrecta
+    return 401, "No se encontró el usuario o su contraseña es incorrecta."

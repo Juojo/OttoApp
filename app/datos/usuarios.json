@@ -3,5 +3,10 @@
         "nombre": "Juan",
         "contrasena": "12345678",
         "mail": "j@gmail.com"
+    },
+    "usr_2": {
+        "nombre": "Pedro",
+        "contrasena": "12345678",
+        "mail": "s@mail.com"
     }
 }

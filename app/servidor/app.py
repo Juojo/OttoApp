@@ -4,6 +4,7 @@ from dotenv import load_dotenv # type: ignore
 import os
 
 import usuarios.register
+import usuarios.login
 
 load_dotenv('../cliente-web/.env')
 
@@ -27,6 +28,19 @@ def crearUsuario():
     return jsonify({
         "message": respuesta[1],
         "usuario": usuario
+    }), respuesta[0]
+
+@app.route("/api/loginUsuario", methods = ['POST'])
+def loginUsuario():
+    usuario = request.get_json()
+    
+    nombre_usuario = usuario.get('username')
+    password = usuario.get('password')
+
+    respuesta = usuarios.login.validarLogin(nombre_usuario, password)
+
+    return jsonify({
+        "message": respuesta[1],
     }), respuesta[0]
 
 if __name__ == "__main__":

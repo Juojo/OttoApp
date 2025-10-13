@@ -28,9 +28,9 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('https://api.tudominio.com/login', formData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/loginUsuario`, formData);
 
-      if (response.data.success) {
+      if (response.status === 200) {
         localStorage.setItem('authToken', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         alert('¡Inicio de sesión exitoso!');
