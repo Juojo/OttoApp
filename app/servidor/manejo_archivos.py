@@ -1,9 +1,11 @@
 import json, sys
 
 ruta_usuarios = "../datos/usuarios.json"
+ruta_productos = "../datos/productos.json"
 
 def leerArchivoJson(ruta_archivo):
     if ruta_archivo == "u": ruta_archivo = ruta_usuarios
+    elif ruta_archivo == "p": ruta_archivo = ruta_productos
 
     try:
         archivo = open(ruta_archivo, "r", encoding="utf-8", newline="\n") # Abre el archivo como read only
@@ -24,7 +26,7 @@ def leerArchivoJson(ruta_archivo):
 
 def agregarUsuarioNuevo(usuario_nuevo, usuarios):
     ultimo_id = list(usuarios.keys())[-1]
-    nuevo_id = generarNuevoId(ultimo_id)
+    nuevo_id = generarNuevoIdUsuario(ultimo_id)
 
     usuario_empaquetado = {
         nuevo_id: usuario_nuevo
@@ -40,11 +42,29 @@ def agregarUsuarioNuevo(usuario_nuevo, usuarios):
             archivo.write("\n")
         return True
     except Exception as e:
-        print("\nError al guardar la nueva pregunta:", e)
+        print("\nError al guardar el nueo usuario:", e)
         return False
     
+def agregarNuevoProducto(producto_nuevo, productos):
+    ultimo_id = list(productos.keys())[-1]
+    nuevo_id = generarNuevoIdUsuario(ultimo_id)
+
+    usuario_empaquetado = {
+        nuevo_id: producto_nuevo
+    }
+
+    productos.update(usuario_empaquetado)
     
-def generarNuevoId(ultimo_id):
+    try:
+        with open(ruta_productos, "w", encoding="utf-8") as archivo:
+            json.dump(productos, archivo, indent=4)
+            archivo.write("\n")
+        return True
+    except Exception as e:
+        print("\nError al guardar el nueo producto:", e)
+        return False
+    
+def generarNuevoIdUsuario(ultimo_id):
     numero = int(ultimo_id.split("_")[1])
     nuevo_id = f"usr_{numero + 1}"
     return nuevo_id
