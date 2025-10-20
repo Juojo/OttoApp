@@ -5,6 +5,7 @@ import os
 
 import usuarios.register
 import usuarios.login
+import productos
 
 load_dotenv('../cliente-web/.env')
 
@@ -41,6 +42,35 @@ def loginUsuario():
 
     return jsonify({
         "message": respuesta[1],
+    }), respuesta[0]
+
+@app.route("/api/producto/<int:id>", methods = ['GET'])
+def obtenerProducto(id):
+    respuesta = productos.obtenerProducto(id)
+
+    return jsonify({
+        "message": respuesta[2],
+        "producto": respuesta[1]
+    }), respuesta[0]
+
+@app.route("/api/productos", methods = ['GET'])
+def obtenerProductos():
+    respuesta = productos.obtenerProductos()
+
+    return jsonify({
+        "message": respuesta[2],
+        "productos": respuesta[1]
+    }), respuesta[0]
+
+@app.route("/api/producto/", methods = ['POST', 'DELETE'])
+def obtenerProducto():
+    producto = request.get_json()
+
+    respuesta = productos.crearProducto(producto)
+
+    return jsonify({
+        "message": respuesta[2],
+        "producto": respuesta[1]
     }), respuesta[0]
 
 if __name__ == "__main__":

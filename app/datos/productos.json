@@ -1,0 +1,8 @@
+{
+    "prod_1": {
+        "titulo": "Comida",
+        "descripcion": "Se puede comer",
+        "precio": 50000,
+        "publicado_por": "Juan"
+    }
+}

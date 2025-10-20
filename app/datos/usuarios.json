@@ -8,5 +8,20 @@
         "nombre": "Pedro",
         "contrasena": "12345678",
         "mail": "s@mail.com"
+    },
+    "usr_3": {
+        "nombre": "Pedro1",
+        "contrasena": "12345678",
+        "mail": "d@gmail.com"
+    },
+    "usr_4": {
+        "nombre": "Carlos",
+        "contrasena": "12345678",
+        "mail": "pep@gmail.com"
+    },
+    "usr_5": {
+        "nombre": "dwcwd",
+        "contrasena": "444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444",
+        "mail": "cdac@gmail.com"
     }
 }
