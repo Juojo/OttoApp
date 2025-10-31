@@ -92,7 +92,7 @@ const Login = () => {
         </form>
 
         <div className="links">
-          <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
+          {/* <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link> */}
           <Link to="/signup">Crear una cuenta</Link>
         </div>
       </div>
