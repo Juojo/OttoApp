@@ -33,7 +33,7 @@ const Login = () => {
       if (response.status === 200) {
         localStorage.setItem('authToken', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        alert('¡Inicio de sesión exitoso!');
+        window.location.href = '/product-catalog';
       } else {
         setError(response.data.message || 'Credenciales incorrectas');
       }

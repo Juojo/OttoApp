@@ -62,16 +62,16 @@ def obtenerProductos():
         "productos": respuesta[1]
     }), respuesta[0]
 
-@app.route("/api/producto/", methods = ['POST', 'DELETE'])
-def obtenerProducto():
-    producto = request.get_json()
+# @app.route("/api/producto/", methods = ['POST', 'DELETE'])
+# def obtenerProducto():
+#     producto = request.get_json()
 
-    respuesta = productos.crearProducto(producto)
+#     respuesta = productos.crearProducto(producto)
 
-    return jsonify({
-        "message": respuesta[2],
-        "producto": respuesta[1]
-    }), respuesta[0]
+#     return jsonify({
+#         "message": respuesta[2],
+#         "producto": respuesta[1]
+#     }), respuesta[0]
 
 if __name__ == "__main__":
     host = os.getenv('SERVER_HOST')
