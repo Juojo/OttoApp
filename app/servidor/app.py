@@ -58,7 +58,7 @@ def obtenerProductos():
     respuesta = productos.obtenerProductos()
 
     return jsonify({
-        "message": respuesta[2],
+        "message": "Productos",
         "productos": respuesta[1]
     }), respuesta[0]
 

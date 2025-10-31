@@ -1,8 +1,44 @@
-{
-    "prod_1": {
-        "titulo": "Comida",
-        "descripcion": "Se puede comer",
-        "precio": 50000,
-        "publicado_por": "Juan"
+[
+    {
+        "id": 1,
+        "name": "Snacks de Atún",
+        "description": "Pequeños premios para tu felino.",
+        "price": 120,
+        "image": ""
+    },
+    {
+        "id": 2,
+        "name": "Snacks Crunchy de Queso",
+        "description": "Deliciosos bocados crujientes y nutritivos.",
+        "price": 160,
+        "image": ""
+    },
+    {
+        "id": 3,
+        "name": "Paté de Pavo Light",
+        "description": "Ideal para gatos con control de peso.",
+        "price": 180,
+        "image": ""
+    },
+    {
+        "id": 4,
+        "name": "Paté Gourmet de Pollo",
+        "description": "Textura suave y sabor irresistible.",
+        "price": 220,
+        "image": ""
+    },
+    {
+        "id": 5,
+        "name": "Croquetas de Salmón",
+        "description": "Ricas en omega 3 y proteínas naturales.",
+        "price": 350,
+        "image": ""
+    },
+    {
+        "id": 6,
+        "name": "Croquetas Premium de Pollo",
+        "description": "Alta calidad para gatos adultos exigentes.",
+        "price": 420,
+        "image": ""
     }
-}
+]

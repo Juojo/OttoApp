@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import "./ProductCatalog.css";
 
 const ProductCatalog = () => {
@@ -10,50 +11,35 @@ const ProductCatalog = () => {
         precio: "todos",
     });
 
-    const products = [
-        {
-            id: 1,
-            name: "Snacks de Atún",
-            description: "Pequeños premios para tu felino.",
-            price: 120,
-            image: "",
-        },
-        {
-            id: 2,
-            name: "Snacks Crunchy de Queso",
-            description: "Deliciosos bocados crujientes y nutritivos.",
-            price: 160,
-            image: "",
-        },
-        {
-            id: 3,
-            name: "Paté de Pavo Light",
-            description: "Ideal para gatos con control de peso.",
-            price: 180,
-            image: "",
-        },
-        {
-            id: 4,
-            name: "Paté Gourmet de Pollo",
-            description: "Textura suave y sabor irresistible.",
-            price: 220,
-            image: "",
-        },
-        {
-            id: 5,
-            name: "Croquetas de Salmón",
-            description: "Ricas en omega 3 y proteínas naturales.",
-            price: 350,
-            image: "",
-        },
-        {
-            id: 6,
-            name: "Croquetas Premium de Pollo",
-            description: "Alta calidad para gatos adultos exigentes.",
-            price: 420,
-            image: "",
-        },
-    ];
+    // products ahora provienen del servidor
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        let mounted = true;
+        const fetchProducts = async () => {
+            setLoading(true);
+            setError("");
+            try {
+                const resp = await axios.get(`${process.env.REACT_APP_API_URL}/productos`);
+                // La API del servidor devuelve: { message: "...", productos: [...] }
+                const data = resp.data;
+                const productsArray = Array.isArray(data)
+                    ? data
+                    : Array.isArray(data?.productos)
+                    ? data.productos
+                    : [];
+                if (mounted) setProducts(productsArray);
+            } catch (err) {
+                if (mounted) setError(err.response?.data?.message || 'No se pudo cargar la lista de productos');
+            } finally {
+                if (mounted) setLoading(false);
+            }
+        };
+        fetchProducts();
+        return () => { mounted = false; };
+    }, []);
 
     // Filtrado combinado: búsqueda + filtros
     const filteredProducts = products.filter((product) => {
@@ -231,7 +217,11 @@ const ProductCatalog = () => {
                 </aside>
 
                 <main className="products-grid">
-                    {filteredProducts.length > 0 ? (
+                    {loading ? (
+                        <p>Cargando productos...</p>
+                    ) : error ? (
+                        <p className="error-message">{error}</p>
+                    ) : filteredProducts.length > 0 ? (
                         filteredProducts.map((product) => (
                             <div key={product.id} className="product-card">
                                 <img
