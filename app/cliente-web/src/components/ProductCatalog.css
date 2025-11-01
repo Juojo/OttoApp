@@ -36,7 +36,11 @@
   color: white;
   margin: 0;
 }
-
+.sort-btn.active {
+  background-color: #c78b5d;
+  color: white;
+  font-weight: bold;
+}
 
 .search-sort {
   display: flex;

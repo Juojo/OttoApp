@@ -4,6 +4,7 @@ import "./ProductCatalog.css";
 
 const ProductCatalog = () => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState(null); // 'asc' | 'desc' | null
     const [selectedFilters, setSelectedFilters] = useState({
         alimentoSeco: false,
         alimentoHumedo: false,
@@ -41,212 +42,181 @@ const ProductCatalog = () => {
         return () => { mounted = false; };
     }, []);
 
-    // Filtrado combinado: búsqueda + filtros
-    const filteredProducts = products.filter((product) => {
-        // 1. Búsqueda por nombre o descripción
-        const matchesSearch =
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.description
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase());
+    // Filtrado
+  const filtered = products.filter(product => {
+    // Búsqueda
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!matchesSearch) return false;
 
-        if (!matchesSearch) return false;
+    // Tipo de alimento (basado en nombre)
+    const isAlimentoSeco = product.name.toLowerCase().includes('croquetas');
+    const isAlimentoHumedo = product.name.toLowerCase().includes('paté');
+    const isSnack = product.name.toLowerCase().includes('snacks');
 
-        // 2. Filtro por tipo
-        const isAlimentoSeco = product.name.toLowerCase().includes("croquetas");
-        const isAlimentoHumedo = product.name.toLowerCase().includes("paté");
-        const isSnack = product.name.toLowerCase().includes("snacks");
+    const tipoSeleccionado = selectedFilters.alimentoSeco || selectedFilters.alimentoHumedo || selectedFilters.snacks;
+    if (tipoSeleccionado) {
+      if (
+        !(selectedFilters.alimentoSeco && isAlimentoSeco) &&
+        !(selectedFilters.alimentoHumedo && isAlimentoHumedo) &&
+        !(selectedFilters.snacks && isSnack)
+      ) {
+        return false;
+      }
+    }
 
-        const tipoSeleccionado =
-            selectedFilters.alimentoSeco ||
-            selectedFilters.alimentoHumedo ||
-            selectedFilters.snacks;
-        if (tipoSeleccionado) {
-            if (
-                !(selectedFilters.alimentoSeco && isAlimentoSeco) &&
-                !(selectedFilters.alimentoHumedo && isAlimentoHumedo) &&
-                !(selectedFilters.snacks && isSnack)
-            ) {
-                return false;
-            }
-        }
+    // Rango de precio
+    if (selectedFilters.precio === 'hasta200' && product.price > 200) return false;
+    if (selectedFilters.precio === '200a400' && (product.price < 200 || product.price > 400)) return false;
+    if (selectedFilters.precio === 'mas400' && product.price <= 400) return false;
 
-        // 3. Filtro por precio
-        if (selectedFilters.precio === "hasta200" && product.price > 200)
-            return false;
-        if (
-            selectedFilters.precio === "200a400" &&
-            (product.price < 200 || product.price > 400)
-        )
-            return false;
-        if (selectedFilters.precio === "mas400" && product.price <= 400)
-            return false;
+    return true;
+  });
 
-        return true;
-    });
+  // Ordenamiento
+  let sortedProducts = [...filtered];
+  if (sortOrder === 'asc') {
+    sortedProducts.sort((a, b) => a.price - b.price);
+  } else if (sortOrder === 'desc') {
+    sortedProducts.sort((a, b) => b.price - a.price);
+  }
 
-    const handleFilterChange = (filterType, value) => {
-        setSelectedFilters((prev) => ({ ...prev, [filterType]: value }));
-    };
+  const handleFilterChange = (filterType, value) => {
+    setSelectedFilters(prev => ({ ...prev, [filterType]: value }));
+  };
 
-    const handlePriceFilterChange = (value) => {
-        setSelectedFilters((prev) => ({ ...prev, precio: value }));
-    };
+  const handlePriceFilterChange = (value) => {
+    setSelectedFilters(prev => ({ ...prev, precio: value }));
+  };
 
-    return (
-        <div className="product-catalog">
-            <header className="catalog-header">
-                <div className="logo-container">
-                    <img
-                        src="https://i.ibb.co/svPsJMNM/logo.png"
-                        alt="Logo OttoGourmet"
-                        className="logo-image"
-                    />
-                    <span className="logo-text">OttoGourmet</span>
-                </div>
-                <div className="search-sort">
-                    <input
-                        type="text"
-                        placeholder="Buscar producto..."
-                        className="search-input"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <div className="sort-buttons">
-                        <button className="sort-btn">▲ Precio</button>
-                        <button className="sort-btn">▼ Precio</button>
-                    </div>
-                </div>
-            </header>
-            <div className="catalog-container">
-                <aside className="filters-panel">
-                    <h3>Filtros</h3>
-                    <div className="filter-group">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={selectedFilters.alimentoSeco}
-                                onChange={(e) =>
-                                    handleFilterChange(
-                                        "alimentoSeco",
-                                        e.target.checked
-                                    )
-                                }
-                            />
-                            Alimento seco
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={selectedFilters.alimentoHumedo}
-                                onChange={(e) =>
-                                    handleFilterChange(
-                                        "alimentoHumedo",
-                                        e.target.checked
-                                    )
-                                }
-                            />
-                            Alimento húmedo
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={selectedFilters.snacks}
-                                onChange={(e) =>
-                                    handleFilterChange(
-                                        "snacks",
-                                        e.target.checked
-                                    )
-                                }
-                            />
-                            Snacks
-                        </label>
-                    </div>
-
-                    <h3>Rango de precios</h3>
-                    <div className="price-filter-group">
-                        <label>
-                            <input
-                                type="radio"
-                                name="precio"
-                                value="todos"
-                                checked={selectedFilters.precio === "todos"}
-                                onChange={() =>
-                                    handlePriceFilterChange("todos")
-                                }
-                            />
-                            Todos
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="precio"
-                                value="hasta200"
-                                checked={selectedFilters.precio === "hasta200"}
-                                onChange={() =>
-                                    handlePriceFilterChange("hasta200")
-                                }
-                            />
-                            Hasta $200
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="precio"
-                                value="200a400"
-                                checked={selectedFilters.precio === "200a400"}
-                                onChange={() =>
-                                    handlePriceFilterChange("200a400")
-                                }
-                            />
-                            $200 - $400
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="precio"
-                                value="mas400"
-                                checked={selectedFilters.precio === "mas400"}
-                                onChange={() =>
-                                    handlePriceFilterChange("mas400")
-                                }
-                            />
-                            Más de $400
-                        </label>
-                    </div>
-                </aside>
-
-                <main className="products-grid">
-                    {loading ? (
-                        <p>Cargando productos...</p>
-                    ) : error ? (
-                        <p className="error-message">{error}</p>
-                    ) : filteredProducts.length > 0 ? (
-                        filteredProducts.map((product) => (
-                            <div key={product.id} className="product-card">
-                                <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="product-image"
-                                />
-                                <h4>{product.name}</h4>
-                                <p className="product-description">
-                                    {product.description}
-                                </p>
-                                <p className="product-price">
-                                    ${product.price}
-                                </p>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="no-results">
-                            No se encontraron productos.
-                        </p>
-                    )}
-                </main>
-            </div>
+  return (
+    <div className="product-catalog">
+      <header className="catalog-header">
+        <div className="logo-container">
+          <img
+            src="https://i.ibb.co/svPsJMNM/logo.png"
+            alt="Logo OttoGourmet"
+            className="logo-image"
+          />
+          <span className="logo-text">OttoGourmet</span>
         </div>
-    );
+        <div className="search-sort">
+          <input
+            type="text"
+            placeholder="Buscar producto..."
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <div className="sort-buttons">
+            <button
+              className={`sort-btn ${sortOrder === 'asc' ? 'active' : ''}`}
+              onClick={() => setSortOrder(sortOrder === 'asc' ? null : 'asc')}
+            >
+              ▲ Precio
+            </button>
+            <button
+              className={`sort-btn ${sortOrder === 'desc' ? 'active' : ''}`}
+              onClick={() => setSortOrder(sortOrder === 'desc' ? null : 'desc')}
+            >
+              ▼ Precio
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="catalog-container">
+        <aside className="filters-panel">
+          <h3>Filtros</h3>
+          <div className="filter-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={selectedFilters.alimentoSeco}
+                onChange={(e) => handleFilterChange('alimentoSeco', e.target.checked)}
+              />
+              Alimento seco
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={selectedFilters.alimentoHumedo}
+                onChange={(e) => handleFilterChange('alimentoHumedo', e.target.checked)}
+              />
+              Alimento húmedo
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={selectedFilters.snacks}
+                onChange={(e) => handleFilterChange('snacks', e.target.checked)}
+              />
+              Snacks
+            </label>
+          </div>
+
+          <h3>Rango de precios</h3>
+          <div className="price-filter-group">
+            <label>
+              <input
+                type="radio"
+                name="precio"
+                value="todos"
+                checked={selectedFilters.precio === 'todos'}
+                onChange={() => handlePriceFilterChange('todos')}
+              />
+              Todos
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="precio"
+                value="hasta200"
+                checked={selectedFilters.precio === 'hasta200'}
+                onChange={() => handlePriceFilterChange('hasta200')}
+              />
+              Hasta $200
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="precio"
+                value="200a400"
+                checked={selectedFilters.precio === '200a400'}
+                onChange={() => handlePriceFilterChange('200a400')}
+              />
+              $200 - $400
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="precio"
+                value="mas400"
+                checked={selectedFilters.precio === 'mas400'}
+                onChange={() => handlePriceFilterChange('mas400')}
+              />
+              Más de $400
+            </label>
+          </div>
+        </aside>
+
+        <main className="products-grid">
+          {sortedProducts.length > 0 ? (
+            sortedProducts.map(product => (
+              <div key={product.id} className="product-card">
+                <img src={product.image} alt={product.name} className="product-image" />
+                <h4>{product.name}</h4>
+                <p className="product-description">{product.description}</p>
+                <p className="product-price">${product.price}</p>
+              </div>
+            ))
+          ) : (
+            <p className="no-results">No se encontraron productos.</p>
+          )}
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default ProductCatalog;
