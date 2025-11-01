@@ -25,16 +25,37 @@ def validarEmail(email):
     """
     Verifica que:
     - haya más de 5 caracteres antes del '@' (es decir, longitud >= 6)
-    - el dominio contenga '.com' y opcionalmente un sufijo como '.ar' (ej: .com.ar)
+    - el proveedor entre '@' y '.com' sea uno de los permitidos
+    - termine en .com (opcionalmente con un sufijo como .com.ar)
     """
     if not isinstance(email, str) or email.strip() == "":
         return False, "El email no puede estar vacío"
-    email = email.strip()
+    email = email.strip().lower()
+
+    # proveedores permitidos
+    allowed_providers = [
+        "gmail",
+        "outlook",
+        "hotmail",
+        "yahoo",
+        "ymail",
+        "aol",
+        "icloud",
+        "protonmail",
+        "zoho"
+    ]
+
     # Antes de @: al menos 6 caracteres no blancos ni '@'
-    # Dominio: algo como dominio.com o dominio.com.ar (se permite cualquier sufijo de 2+ letras después de .com)
-    pattern = r'^[^\s@]{5,}@[A-Za-z0-9-]+\.com(?:\.[A-Za-z]{2,})?$'
+    # Dominios permitidos: provider.com o provider.com.xx (ej .com.ar)
+    providers_pattern = "|".join(re.escape(p) for p in allowed_providers)
+    pattern = rf'^[^\s@]{{6,}}@(?:{providers_pattern})\.com(?:\.[A-Za-z]{{2,}})?$'
+
     if not re.match(pattern, email, re.IGNORECASE):
-        return False, "El email debe tener más de 5 caracteres antes de '@' y terminar en .com (opcionalmente .com.ar)"
+        return False, ("El email debe tener más de 5 caracteres antes de '@'"
+                       "\n\nEl dominio debe ser: "
+                       "\ngmail.com, outlook.com, hotmail.com, yahoo.com, ymail.com, "
+                       "aol.com, icloud.com, protonmail.com, zoho.com "
+                       "\n\n(se permite además un sufijo después de .com, ej .com.ar)")
     return True, ""
 
 def empaquetarUsuario(nombre_usuario_nuevo, contrasena_nueva, mail_nuevo):
