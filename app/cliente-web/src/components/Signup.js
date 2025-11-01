@@ -56,7 +56,7 @@ const Signup = () => {
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <label>Nombre completo</label>
+          <label>Nombre de usuario</label>
           <input
             type="text"
             name="fullName"
